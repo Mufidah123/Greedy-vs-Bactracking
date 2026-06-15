@@ -13,23 +13,19 @@ public class GreedyScheduler {
             return assignments;
         }
 
-        // 1. SORT tenants BY endTime ASCENDING
         List<Tenant> sortedTenants = new ArrayList<>(tenants);
         sortedTenants.sort(Comparator.comparingInt(Tenant::getEndTime));
 
-        // 2. ADD tenants[0] TO selectedTenants
         Tenant firstTenant = sortedTenants.get(0);
-        assignments.add(new StandAssignment(firstTenant, 1)); // Diplot ke Zona 1 (Zona A)
+        assignments.add(new StandAssignment(firstTenant, 1));
         int lastFinish = firstTenant.getEndTime();
 
-        // 3. FOR i ← 1 TO tenants.length - 1 DO
         for (int i = 1; i < sortedTenants.size(); i++) {
             Tenant current = sortedTenants.get(i);
             
-            // IF tenants[i].startTime >= lastFinish THEN
             if (current.getStartTime() >= lastFinish) {
                 assignments.add(new StandAssignment(current, 1));
-                lastFinish = current.getEndTime(); // lastFinish ← tenants[i].endTime
+                lastFinish = current.getEndTime();
             } else {
                 System.out.println(">>> [Greedy] Tenant Tereliminasi (Bentrok): " + current.getName());
             }
