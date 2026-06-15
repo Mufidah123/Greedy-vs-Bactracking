@@ -1,0 +1,24 @@
+BEGIN
+    tenants ← inputTenantData()
+    selectedTenants ← GreedyActivitySelection(tenants)
+    graph ← buildConflictGraph(selectedTenants)
+    colors ← array initialized with 0
+
+    success ← GraphColoring(0, graph, colors, totalStands)
+
+    IF success THEN
+        DISPLAY stand allocation
+    ELSE
+        DISPLAY "No solution found"
+    END IF
+END
+
+// Penjelasan lebih mudah:
+
+Mulai
+Buat graph konflik tenant
+Jika GraphColoring(0, jumlahStand) berhasil maka
+    Tampilkan alokasi stand
+Jika tidak
+    Tampilkan "Tidak ditemukan solusi"
+Selesai

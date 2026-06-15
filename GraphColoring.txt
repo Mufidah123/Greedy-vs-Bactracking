@@ -1,0 +1,30 @@
+ALGORITHM GraphColoring(vertex, graph, colors, maxColors)
+    IF vertex = numberOfVertices THEN
+        RETURN TRUE
+    END IF
+
+    FOR color ← 1 TO maxColors DO
+
+        IF IsSafe(vertex, color, colors, graph) THEN
+            colors[vertex] ← color
+
+            IF GraphColoring(vertex + 1, graph, colors, maxColors) THEN
+                RETURN TRUE
+            END IF
+            colors[vertex] ← 0
+
+        END IF
+    END FOR
+    RETURN FALSE
+
+END ALGORITHM
+
+// Worst Case:
+O(k^n)
+
+n = jumlah tenant
+k = jumlah stand/zona bazar
+// karena setiap tenant dapat mencoba hingga k warna (stand) dan seluruh kombinasi mungkin perlu diperiksa.
+
+Proses backtracking terjadi pada fungsi GraphColoring(), tepat setelah pemanggilan rekursif gagal dan warna
+node saat ini dikembalikan ke nilai awal (colors[vertex] ← 0) untuk mencoba warna lain.

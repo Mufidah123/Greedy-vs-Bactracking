@@ -1,0 +1,28 @@
+ALGORITHM GreedyActivitySelection(tenants)
+
+    SORT tenants BY endTime ASCENDING
+    selectedTenants ← empty list
+
+    ADD tenants[0] TO selectedTenants
+    lastFinish ← tenants[0].endTime
+
+    FOR i ← 1 TO tenants.length - 1 DO
+        IF tenants[i].startTime >= lastFinish THEN
+            ADD tenants[i] TO selectedTenants
+            lastFinish ← tenants[i].endTime
+        END IF
+    END FOR
+    
+    RETURN selectedTenants
+
+END ALGORITHM
+
+// Penjelasan:
+1. Urutkan tenant berdasarkan waktu selesai (ascending).
+2. Pilih tenant yang selesai paling cepat.
+3. Pilih tenant berikutnya yang tidak bertabrakan waktunya.
+4. Ulangi hingga seluruh tenant diperiksa.
+
+Sorting      : O(n log n)
+Selection    : O(n)
+Total        : O(n log n)

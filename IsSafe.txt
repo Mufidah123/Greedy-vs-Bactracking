@@ -1,0 +1,15 @@
+ALGORITHM IsSafe(vertex, color, colors, graph)
+
+    FOR each neighbor OF vertex DO
+
+        IF graph[vertex][neighbor] = 1 AND
+            colors[neighbor] = color THEN
+            RETURN FALSE
+        END IF
+
+    END FOR
+
+    RETURN TRUE
+END ALGORITHM
+
+// Tujuan : Menentukan stand untuk setiap tenant tanpa konflik kategori.
