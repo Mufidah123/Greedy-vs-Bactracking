@@ -1,6 +1,7 @@
 # Greedy-vs-Bactracking
 ## Judul:
-Sistem Penjadwalan Otomatis Tenant Bazar Restoran Selama Seminggu Menggunakan Algoritma Greedy dan Backtracking
+**Sistem Penjadwalan Otomatis Tenant Bazar Restoran Selama Seminggu Menggunakan Algoritma Greedy dan Backtracking**
+
 ## Masalah:
 Restoran mengadakan bazar UMKM selama satu minggu. Jumlah tenant yang mendaftar melebihi kapasitas stand yang tersedia. Selain itu terdapat konflik penempatan antar tenant berdasarkan kategori produk dan kebutuhan fasilitas.
 
@@ -17,3 +18,5 @@ Algoritma Backtracking (Graph Coloring) digunakan untuk menentukan alokasi stand
 
 ## Dataset / Data Dummy:
 ![Sample Data](data/Dataset.png)
+
+_Pada versi prototype ini, data pendaftaran tenant masih menggunakan data dummy yang disimpan di SampleData.java. Pada implementasi nyata, data tersebut dapat berasal dari form pendaftaran atau database_
