@@ -57,8 +57,14 @@ public class SampleData {
         tenants.add(new Tenant("Es Teh Jumbo","Minuman",
             20,28
         ));
-        tenants.add(new Tenant("Burger Express","Makanan",
-            66,80
+        tenants.add(new Tenant("Pancake Premium","Dessert", 
+            8,48
+        ));
+        tenants.add(new Tenant("Jus Buah Segar","Minuman", 
+            8,18
+        ));
+        tenants.add(new Tenant("Kebab Turki","Makanan",
+            8,58
         ));
         tenants.add(new Tenant("Nusa Rajut","Kerajinan",
             18,32

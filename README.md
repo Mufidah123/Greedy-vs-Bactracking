@@ -20,4 +20,4 @@ Algoritma Backtracking digunakan untuk mencari solusi optimal global dalam aloka
 
 ![Sample Data](data/Dataset.png)
 
-_Pada versi prototype ini, data pendaftaran tenant masih menggunakan data dummy yang disimpan di SampleData.java. Data mencakup nama tenant, kategori produk, jam mulai, dan jam selesai (berbasis skala 168 jam selama satu minggu). Pada implementasi nyata, data tersebut dapat berasal dari form pendaftaran atau database_
+_Pada versi prototype ini, data pendaftaran tenant masih menggunakan data dummy yang disimpan di SampleData.java. Data mencakup nama tenant, kategori produk, jam mulai, dan jam selesai (berbasis skala 168 jam selama satu minggu). Namun, pada implementasi nyata, data tersebut dapat berasal dari form pendaftaran atau database_

@@ -81,6 +81,7 @@ public class Main {
     }
 
     private static void printTenantsAsTable(List<Tenant> tenants) {
+        System.out.println("\n=== DATA PENDAFTAR TENANT ===");
         System.out.println("-----------------------------------------------------------------------------------");
         System.out.printf("| %-22s | %-13s | %-18s | %-18s|\n", "Nama Tenant", "Kategori", "Waktu Mulai", "Waktu Selesai");
         System.out.println("-----------------------------------------------------------------------------------");
@@ -162,12 +163,12 @@ public class Main {
         List<StandAssignment> backtrackResult = backtrack.allocate();
 
         System.out.println("\n[Hasil Penjadwalan: ALGORITMA GREEDY]");
+        System.out.println("Total Dijadwalkan : " + greedyResult.size() + " Tenant\n");
         printAssignments(greedyResult);
-        System.out.println("Total Dijadwalkan : " + greedyResult.size() + " Tenant");
 
         System.out.println("\n[Hasil Penjadwalan: ALGORITMA BACKTRACKING]");
+        System.out.println("Total Dijadwalkan : " + backtrackResult.size() + " Tenant\n");
         printAssignments(backtrackResult);
-        System.out.println("Total Dijadwalkan : " + backtrackResult.size() + " Tenant");
     }
 
     private static void printAssignments(List<StandAssignment> assignments) {
