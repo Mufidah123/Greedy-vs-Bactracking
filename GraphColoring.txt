@@ -1,30 +1,40 @@
-ALGORITHM GraphColoring(vertex, graph, colors, maxColors)
-    IF vertex = numberOfVertices THEN
-        RETURN TRUE
+ALGORITHM BacktrackingScheduler(tenantIndex, zoneAllocation, acceptedCount)
+
+    // OPTIMASI PRUNING: Hentikan pencarian jika sisa tenant tidak akan melampaui rekor terbaik
+    remainingTenants ← totalTenants - tenantIndex
+    IF acceptedCount + remainingTenants <= bestCount THEN
+        RETURN
     END IF
 
-    FOR color ← 1 TO maxColors DO
+    // BASIS REKURSI: Jika semua tenant sudah dievaluasi
+    IF tenantIndex = totalTenants THEN
+        IF acceptedCount > bestCount THEN
+            bestCount ← acceptedCount
+            bestSolution ← buildAssignments(zoneAllocation)
+        END IF
+        RETURN
+    END IF
 
-        IF IsSafe(vertex, color, colors, graph) THEN
-            colors[vertex] ← color
-
-            IF GraphColoring(vertex + 1, graph, colors, maxColors) THEN
-                RETURN TRUE
-            END IF
-            colors[vertex] ← 0
-
+    // Mencoba tempatkan tenant di setiap zona yang tersedia
+    FOR zone ← 1 TO totalZones DO
+        IF IsSafe(tenantIndex, zone, zoneAllocation) THEN
+            zoneAllocation[tenantIndex] ← zone
+            BacktrackingScheduler(tenantIndex + 1, zoneAllocation, acceptedCount + 1)
+            zoneAllocation[tenantIndex] ← 0 // Proses Backtracking (Mundur dan reset)
         END IF
     END FOR
-    RETURN FALSE
+
+    // Opsi alternatif: Melewati (menolak) tenant ini dan lanjut ke tenant berikutnya
+    BacktrackingScheduler(tenantIndex + 1, zoneAllocation, acceptedCount)
 
 END ALGORITHM
 
-// Worst Case:
-O(k^n)
+// Penjelasan & Kompleksitas Waktu:
+// Worst Case: O((Z + 1)^N)
+// N = jumlah tenant, Z = jumlah zona (stand)
 
-n = jumlah tenant
-k = jumlah stand/zona bazar
-// karena setiap tenant dapat mencoba hingga k warna (stand) dan seluruh kombinasi mungkin perlu diperiksa.
+// Setiap tenant memiliki Z pilihan zona ditambah 1 pilihan untuk ditolak (di-skip).
+// Algoritma ini dimodifikasi dari Graph Coloring murni untuk mencari "Jumlah Tenant Maksimal" (Global Optimum).
 
-Proses backtracking terjadi pada fungsi GraphColoring(), tepat setelah pemanggilan rekursif gagal dan warna
-node saat ini dikembalikan ke nilai awal (colors[vertex] ← 0) untuk mencoba warna lain.
+// Proses backtracking terjadi ketika algoritma selesai mencoba suatu zona dan mengembalikan nilai array ke 0
+// (zoneAllocation[tenantIndex] ← 0) untuk mengeksplorasi cabang kemungkinan lain.

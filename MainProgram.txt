@@ -1,24 +1,54 @@
-BEGIN
-    tenants ← inputTenantData()
-    selectedTenants ← GreedyActivitySelection(tenants)
-    graph ← buildConflictGraph(selectedTenants)
-    colors ← array initialized with 0
+ALGORITHM MainProgram
 
-    success ← GraphColoring(0, graph, colors, totalStands)
+    tenants ← LoadData(SampleData)
+    totalZones ← 4
 
-    IF success THEN
-        DISPLAY stand allocation
-    ELSE
-        DISPLAY "No solution found"
-    END IF
-END
+    WHILE TRUE DO
+        DISPLAY Menu Utama
+        choice ← INPUT user
 
-// Penjelasan lebih mudah:
+        SWITCH choice DO
+            CASE 1:
+                DISPLAY tenants (Tabel Pendaftar)
+            CASE 2:
+                greedyResult ← GreedyScheduler(tenants, totalZones)
+                DISPLAY Ringkasan greedyResult
+            CASE 3:
+                backtrackResult ← BacktrackingScheduler(tenants, totalZones)
+                DISPLAY Ringkasan backtrackResult
+            CASE 4:
+                START TIMER
+                greedyResult ← GreedyScheduler(tenants, totalZones)
+                STOP TIMER
 
-Mulai
-Buat graph konflik tenant
-Jika GraphColoring(0, jumlahStand) berhasil maka
-    Tampilkan alokasi stand
-Jika tidak
-    Tampilkan "Tidak ditemukan solusi"
-Selesai
+                START TIMER
+                backtrackResult ← BacktrackingScheduler(tenants, totalZones)
+                STOP TIMER
+
+                DISPLAY Komparasi Jadwal & Waktu Eksekusi
+            CASE 5:
+                extremeTenants ← LoadData(ExtremeData)
+                Run Greedy dan Backtracking menggunakan extremeTenants
+                DISPLAY Demonstrasi Kelemahan Greedy
+            CASE 0:
+                EXIT PROGRAM
+        END SWITCH
+    END WHILE
+
+END ALGORITHM
+
+// Penjelasan Lebih Mudah:
+>> Mulai
+>> Muat data pendaftar UMKM dan tetapkan jumlah stand (4 stand).
+>> Tampilkan Menu Utama untuk dipilih oleh pengguna.
+>> Jika pilih 2:
+        Jalankan Algoritma Greedy secara mandiri untuk menyusun jadwal.
+        Tampilkan jumlah yang diterima, ditolak, dan daftar namanya.
+>> Jika pilih 3:
+        Jalankan Algoritma Backtracking secara mandiri untuk menyusun jadwal.
+        Tampilkan jumlah yang diterima, ditolak, dan daftar namanya.
+>> Jika pilih 4:
+        Jalankan kedua algoritma secara bersamaan.
+        Bandingkan jadwal detail (hari & jam) dan kecepatan komputasinya.
+>> Jika pilih 0:
+        Selesai.

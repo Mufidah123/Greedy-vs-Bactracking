@@ -1,15 +1,33 @@
-ALGORITHM IsSafe(vertex, color, colors, graph)
+ALGORITHM IsSafe(currentTenant, targetZone, existingAssignments)
 
-    FOR each neighbor OF vertex DO
+    FOR each assignment IN existingAssignments DO
+        otherTenant ← assignment.tenant
+        assignedZone ← assignment.zone
+        
+        // Cek apakah waktu operasional mereka saling tumpang tindih
+        timeOverlap ← (currentTenant.startTime < otherTenant.endTime) AND 
+                      (otherTenant.startTime < currentTenant.endTime)
 
-        IF graph[vertex][neighbor] = 1 AND
-            colors[neighbor] = color THEN
-            RETURN FALSE
+        // Evaluasi konflik hanya jika waktunya bentrok
+        IF timeOverlap = TRUE THEN
+            // 1. Cek Bentrok Fisik
+            IF assignedZone = targetZone THEN
+                RETURN FALSE // Tidak boleh 2 tenant menempati stand yang sama di jam yang sama
+            END IF
+
+            // 2. Cek Bentrok Persaingan (Graph Coloring Constraint)
+            IF currentTenant.category = otherTenant.category THEN
+                RETURN FALSE // Tidak boleh 2 tenant dengan kategori sama buka di jam yang sama
+            END IF
+
         END IF
-
     END FOR
 
     RETURN TRUE
+    
 END ALGORITHM
 
-// Tujuan : Menentukan stand untuk setiap tenant tanpa konflik kategori.
+// Tujuan: Menjaga integritas jadwal (mencegah double-booking pada satu fisik stand) 
+// dan menerapkan batasan Graph Coloring untuk mencegah dua UMKM dengan kategori produk 
+// yang sama (misal: "Makanan" dan "Makanan") beroperasi secara bersamaan demi mencegah kanibalisasi pasar.
+// Jika waktunya tidak bentrok (beda shift/beda hari), tenant bebas menggunakan stand mana pun.

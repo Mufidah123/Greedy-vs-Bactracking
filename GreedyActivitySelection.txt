@@ -1,28 +1,34 @@
-ALGORITHM GreedyActivitySelection(tenants)
+ALGORITHM GreedyScheduler(tenants, totalZones)
 
     SORT tenants BY endTime ASCENDING
-    selectedTenants ← empty list
+    assignments ← empty list
 
-    ADD tenants[0] TO selectedTenants
-    lastFinish ← tenants[0].endTime
-
-    FOR i ← 1 TO tenants.length - 1 DO
-        IF tenants[i].startTime >= lastFinish THEN
-            ADD tenants[i] TO selectedTenants
-            lastFinish ← tenants[i].endTime
+    FOR each tenant IN tenants DO
+        assigned ← FALSE
+        
+        FOR zone ← 1 TO totalZones DO
+            IF IsSafe(tenant, zone, assignments) THEN
+                ADD (tenant, zone) TO assignments
+                assigned ← TRUE
+                BREAK // Lanjut ke tenant berikutnya setelah dapat zona
+            END IF
+        END FOR
+        
+        IF assigned = FALSE THEN
+            ADD tenant TO rejectedTenants
         END IF
     END FOR
     
-    RETURN selectedTenants
+    RETURN assignments
 
 END ALGORITHM
 
-// Penjelasan:
-1. Urutkan tenant berdasarkan waktu selesai (ascending).
-2. Pilih tenant yang selesai paling cepat.
-3. Pilih tenant berikutnya yang tidak bertabrakan waktunya.
-4. Ulangi hingga seluruh tenant diperiksa.
+// Penjelasan & Kompleksitas Waktu:
+// 1. Urutkan tenant berdasarkan waktu selesai (Earliest Finish Time) agar menyisakan lebih banyak waktu untuk tenant lain.
+// 2. Evaluasi tenant satu per satu dan coba masukkan ke zona 1 hingga Z.
+// 3. Jika aman (IsSafe = TRUE), langsung tempatkan dan pindah ke tenant berikutnya tanpa mengubah keputusan (Sifat mutlak Greedy).
 
-Sorting      : O(n log n)
-Selection    : O(n)
-Total        : O(n log n)
+// Kompleksitas Waktu:
+// Sorting   : O(N log N)
+// Selection : O(N * Z * M) -> N = tenant, Z = zona, M = jumlah tenant yang sudah diterima
+// Total Worst Case didominasi oleh proses Iterasi dan Sorting, menjadikannya sangat cepat secara komputasi dibandingkan Backtracking.
