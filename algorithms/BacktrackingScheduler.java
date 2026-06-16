@@ -26,6 +26,7 @@ public class BacktrackingScheduler {
         return bestSolution;
     }
 
+    // Teknik Pruning (pemangkasan cabang)
     private void backtrack(int tenantIndex, int[] zoneAllocation, int acceptedCount) {
         int remainingTenants = tenants.size() - tenantIndex;
         if (acceptedCount + remainingTenants <= bestCount) {
