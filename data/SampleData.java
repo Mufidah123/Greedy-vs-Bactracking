@@ -50,6 +50,20 @@ public class SampleData {
             32,162
         ));
 
+        // Data Pengeco
+        tenants.add(new Tenant("Ayam Geprek Sultan","Makanan",
+            18,30
+        ));
+        tenants.add(new Tenant("Es Teh Jumbo","Minuman",
+            20,28
+        ));
+        tenants.add(new Tenant("Burger Express","Makanan",
+            66,80
+        ));
+        tenants.add(new Tenant("Nusa Rajut","Kerajinan",
+            18,32
+        ));
+
         return tenants;
     }
 }

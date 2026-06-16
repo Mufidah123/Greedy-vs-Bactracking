@@ -40,7 +40,7 @@ public class Tenant {
 
     @Override
     public String toString() {
-        return String.format("%-20s | %-15s | %3d | %3d",
+        return String.format("%-20s | %-15s | %-15s | %-15s",
             name, category, TimeHelper.format(startTime), TimeHelper.format(endTime)
         );
     }

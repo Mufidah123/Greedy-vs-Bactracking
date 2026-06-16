@@ -6,7 +6,7 @@
 Restoran mengadakan bazar UMKM selama satu minggu. Jumlah tenant yang mendaftar melebihi kapasitas stand yang tersedia. Selain itu terdapat konflik penempatan antar tenant berdasarkan kategori produk dan kebutuhan fasilitas.
 
 ## Kendala
-* Jumlah stand terbatas (5 stand)
+* Jumlah stand/zona terbatas (4 stand)
 * Tenant dengan kategori sama tidak boleh berdampingan.
 * Tenant tidak boleh menggunakan stand yang sama pada waktu yang bertabrakan.
 
