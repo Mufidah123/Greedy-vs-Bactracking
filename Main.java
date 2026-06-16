@@ -1,364 +1,197 @@
 import algorithms.BacktrackingScheduler;
 import algorithms.GreedyScheduler;
+import data.ExtremeData;
 import data.SampleData;
 import java.util.List;
 import java.util.Scanner;
 import models.StandAssignment;
 import models.Tenant;
-import utils.TimeHelper;
 
 public class Main {
 
     private static final int TOTAL_ZONES = 4;
 
-    private static boolean greedyExecuted = false;
-    private static boolean backtrackingExecuted = false;
-
     public static void main(String[] args) {
-
         Scanner scanner = new Scanner(System.in);
+        List<Tenant> tenants = SampleData.getTenants();
 
-        List<Tenant> allTenants = SampleData.getTenants();
+        while (true) {
+            System.out.println("\n=== SISTEM PENJADWALAN STAND BAZAR UMKM (1 MINGGU) ===");
+            System.out.println("1. Tampilkan Data Pendaftar");
+            System.out.println("2. Jalankan Algoritma Greedy (Activity Selection)");
+            System.out.println("3. Jalankan Algoritma Backtracking (Graph Coloring)");
+            System.out.println("4. Bandingkan Hasil Keduanya (Detail Jadwal & Waktu)");
+            System.out.println("5. Uji Kasus Ekstrem (Demonstrasi Kelemahan)");
+            System.out.println("0. Keluar");
+            System.out.print("Pilih menu: ");
 
-        List<StandAssignment> greedyResult = null;
-        List<StandAssignment> backtrackingResult = null;
-
-        int choice;
-
-        do {
-
-            System.out.println("\n=================================================");
-            System.out.println("      SISTEM PENJADWALAN BAZAR RESTORAN");
-            System.out.println("=================================================");
-
-            System.out.println("Jumlah Zona      : " + TOTAL_ZONES);
-            System.out.println("Jumlah Pendaftar : " + allTenants.size());
-
-            System.out.println("\n1. Tampilkan Data Pendaftar");
-            System.out.println("2. Jalankan Greedy Scheduler");
-            System.out.println("3. Jalankan Backtracking Scheduler");
-            System.out.println("4. Bandingkan Hasil");
-            System.out.println("5. Keluar");
-
-            System.out.print("\nPilihan : ");
-
-            choice = scanner.nextInt();
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Membersihkan sisa karakter enter/newline
 
             switch (choice) {
-
-                case 1:
-                    showApplicants(allTenants);
-                    waitEnter(scanner);
+                case 1: 
+                    printTenantsAsTable(tenants); 
+                    pressEnterToContinue(scanner);
                     break;
-
-                case 2:
-                    greedyResult = runGreedy(allTenants);
-                    greedyExecuted = true;
-                    waitEnter(scanner);
+                case 2: 
+                    runGreedy(tenants); 
+                    pressEnterToContinue(scanner);
                     break;
-
-                case 3:
-                    backtrackingResult = runBacktracking(allTenants);
-                    backtrackingExecuted = true;
-                    waitEnter(scanner);
+                case 3: 
+                    runBacktracking(tenants); 
+                    pressEnterToContinue(scanner);
                     break;
-
-                case 4:
-                    showComparison(
-                            greedyResult,
-                            backtrackingResult
-                    );
-                    waitEnter(scanner);
+                case 4: 
+                    compareResults(tenants); 
+                    pressEnterToContinue(scanner);
                     break;
-
-                case 5:
-                    System.out.println("\nTerima kasih!");
+                case 5: 
+                    runExtremeCase(); 
+                    pressEnterToContinue(scanner);
                     break;
-
+                case 0:
+                    System.out.println("Program selesai.");
+                    scanner.close();
+                    return;
                 default:
-                    System.out.println("\nPilihan tidak valid!");
-                    waitEnter(scanner);
+                    System.out.println("Pilihan tidak valid!");
+                    pressEnterToContinue(scanner);
             }
-
-        } while (choice != 5);
-
-        scanner.close();
-    }
-
-    private static void showApplicants(
-            List<Tenant> tenants
-    ) {
-
-        System.out.println("\n=================================================");
-        System.out.println("                  DATA PENDAFTAR");
-        System.out.println("=================================================");
-
-        System.out.printf(
-                "%-3s %-25s %-18s %-12s %-12s%n",
-                "ID",
-                "Nama Tenant",
-                "Kategori",
-                "Mulai",
-                "Selesai"
-        );
-
-        System.out.println(
-                "--------------------------------------------------------------------------"
-        );
-
-        for (Tenant tenant : tenants) {
-
-            System.out.printf(
-                    "%-3d %-25s %-18s %-12s %-12s%n",
-                    tenant.getId(),
-                    tenant.getName(),
-                    tenant.getCategory(),
-                    TimeHelper.format(
-                            tenant.getStartTime()
-                    ),
-                    TimeHelper.format(
-                            tenant.getEndTime()
-                    )
-            );
         }
     }
 
-    private static List<StandAssignment> runGreedy(
-            List<Tenant> tenants
-    ) {
-
-        System.out.println("\n=================================================");
-        System.out.println("                GREEDY SCHEDULER");
-        System.out.println("=================================================");
-
-        GreedyScheduler greedy =
-                new GreedyScheduler(TOTAL_ZONES);
-
-        List<StandAssignment> result =
-                greedy.schedule(tenants);
-
-        int accepted = result.size();
-        int rejected = tenants.size() - accepted;
-
-        System.out.println("Tenant Diproses : " + tenants.size());
-        System.out.println("Tenant Diterima : " + accepted);
-        System.out.println("Tenant Ditolak  : " + rejected);
-
-        System.out.println("\nDaftar Tenant Diterima:");
-
-        for (StandAssignment assignment : result) {
-
-            System.out.println(
-                    "- "
-                            + assignment.getTenant()
-                                    .getName()
-            );
-        }
-
-        System.out.println("\nGreedy selesai.");
-
-        return result;
+    // FUNGSI BARU: Jeda sebelum kembali ke menu
+    private static void pressEnterToContinue(Scanner scanner) {
+        System.out.print("\nTekan Enter untuk kembali ke menu...");
+        scanner.nextLine();
     }
 
-    private static List<StandAssignment> runBacktracking(
-            List<Tenant> tenants
-    ) {
-
-        System.out.println("\n=================================================");
-        System.out.println("             BACKTRACKING SCHEDULER");
-        System.out.println("=================================================");
-
-        BacktrackingScheduler scheduler =
-                new BacktrackingScheduler(
-                        tenants,
-                        TOTAL_ZONES
-                );
-
-        List<StandAssignment> result =
-                scheduler.allocate();
-
-        if (result == null) {
-
-            System.out.println("\nTidak ditemukan solusi.");
-
-            return null;
+    private static String formatTime(int hours) {
+        String[] days = {"Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"};
+        int dayIndex = (hours) / 24;
+        int timeOfDay = (hours) % 24;
+        
+        if (dayIndex >= 7) {
+            dayIndex = 6;
+            timeOfDay = 24;
         }
-
-        int accepted = result.size();
-        int rejected = tenants.size() - accepted;
-
-        System.out.println("Tenant Diproses : " + tenants.size());
-        System.out.println("Tenant Diterima : " + accepted);
-        System.out.println("Tenant Ditolak  : " + rejected);
-
-        System.out.println("\nDaftar Tenant Diterima:");
-
-        for (StandAssignment assignment : result) {
-
-            System.out.println(
-                    "- "
-                            + assignment.getTenant()
-                                    .getName()
-            );
-        }
-
-        System.out.println("\nBacktracking selesai.");
-
-        return result;
+        return String.format("%s %02d:00", days[dayIndex], timeOfDay);
     }
 
-    private static void showComparison(
-            List<StandAssignment> greedyResult,
-            List<StandAssignment> backtrackingResult
-    ) {
-
-        System.out.println("\n=================================================");
-        System.out.println("                PERBANDINGAN HASIL");
-        System.out.println("=================================================");
-
-        if (!greedyExecuted) {
-
-            System.out.println(
-                    "\nGreedy belum dijalankan!"
-            );
-
-            return;
+    private static void printTenantsAsTable(List<Tenant> tenants) {
+        System.out.println("\n--- Data Pendaftar UMKM ---");
+        System.out.println("-----------------------------------------------------------------------------------");
+        System.out.printf("| %-22s | %-13s | %-18s | %-18s |\n", "Nama Tenant", "Kategori", "Waktu Mulai", "Waktu Selesai");
+        System.out.println("-----------------------------------------------------------------------------------");
+        for (Tenant t : tenants) {
+            System.out.printf("| %-22s | %-13s | %-18s | %-18s |\n", 
+                t.getName(), t.getCategory(), formatTime(t.getStartTime()), formatTime(t.getEndTime()));
         }
+        System.out.println("-----------------------------------------------------------------------------------");
+    }
 
-        if (!backtrackingExecuted) {
+    private static void runGreedy(List<Tenant> tenants) {
+        System.out.println("\n=== Menjalankan Algoritma Greedy ===");
+        GreedyScheduler scheduler = new GreedyScheduler(TOTAL_ZONES);
+        List<StandAssignment> assignments = scheduler.schedule(tenants);
+        printSummary(tenants, assignments, "Greedy");
+    }
 
-            System.out.println(
-                    "\nBacktracking belum dijalankan!"
-            );
+    private static void runBacktracking(List<Tenant> tenants) {
+        System.out.println("\n=== Menjalankan Algoritma Backtracking ===");
+        BacktrackingScheduler scheduler = new BacktrackingScheduler(tenants, TOTAL_ZONES);
+        List<StandAssignment> assignments = scheduler.allocate();
+        printSummary(tenants, assignments, "Backtracking");
+    }
 
-            return;
-        }
+    // FUNGSI BARU: Mencetak ringkasan saja (sesuai permintaan Anda untuk Menu 2 & 3)
+    private static void printSummary(List<Tenant> allTenants, List<StandAssignment> assignments, String algorithmName) {
+        int processed = allTenants.size();
+        int accepted = assignments.size();
+        int rejected = processed - accepted;
 
-        System.out.println("\n========== HASIL GREEDY ==========");
-
-        printZoneResult(greedyResult);
-
-        System.out.println("\n======= HASIL BACKTRACKING =======");
-
-        if (backtrackingResult == null) {
-
-            System.out.println(
-                    "\nTidak ditemukan solusi."
-            );
-
-            return;
-        }
-
-        printZoneResult(backtrackingResult);
-
-        System.out.println("\n========== RINGKASAN ==========");
-
-        System.out.println(
-                "Greedy       : "
-                        + greedyResult.size()
-                        + " tenant diterima"
-        );
-
-        System.out.println(
-                "Backtracking : "
-                        + backtrackingResult.size()
-                        + " tenant diterima"
-        );
-
-        if (backtrackingResult.size()
-                > greedyResult.size()) {
-
-            System.out.println(
-                    "\nBacktracking menghasilkan solusi lebih baik."
-            );
-
-        } else if (backtrackingResult.size()
-                < greedyResult.size()) {
-
-            System.out.println(
-                    "\nGreedy menghasilkan solusi lebih baik."
-            );
-
+        System.out.println("\n--- Ringkasan Eksekusi " + algorithmName + " ---");
+        System.out.println("Jumlah Tenant Diproses : " + processed);
+        System.out.println("Jumlah Tenant Diterima : " + accepted);
+        System.out.println("Jumlah Tenant Ditolak  : " + rejected);
+        
+        System.out.println("\nDaftar Tenant yang Diterima (Hanya Nama):");
+        if (assignments.isEmpty()) {
+            System.out.println("- (Tidak ada tenant yang diterima)");
         } else {
-
-            System.out.println(
-                    "\nKeduanya menghasilkan jumlah tenant yang sama."
-            );
+            for (StandAssignment sa : assignments) {
+                System.out.println("- " + sa.getTenant().getName());
+            }
         }
     }
 
-    private static void printZoneResult(
-                List<StandAssignment> assignments
-        ) {
+    private static void compareResults(List<Tenant> tenants) {
+        System.out.println("\n=== KOMPARASI HASIL PENJADWALAN ===");
 
-        for (int zone = 1;
-                zone <= TOTAL_ZONES;
-                zone++) {
+        long startGreedy = System.nanoTime();
+        GreedyScheduler greedy = new GreedyScheduler(TOTAL_ZONES);
+        List<StandAssignment> greedyResult = greedy.schedule(tenants);
+        long timeGreedy = System.nanoTime() - startGreedy;
 
-                System.out.println(
-                        "\nZona "
-                                + (char) ('A' + zone - 1)
-                );
+        long startBacktrack = System.nanoTime();
+        BacktrackingScheduler backtrack = new BacktrackingScheduler(tenants, TOTAL_ZONES);
+        List<StandAssignment> backtrackResult = backtrack.allocate();
+        long timeBacktrack = System.nanoTime() - startBacktrack;
 
-                System.out.println(
-                        "--------------------------------------------------------------------------------"
-                );
+        System.out.println("\n[1] ALOKASI JADWAL STAND - GREEDY");
+        printAssignments(greedyResult);
 
-                System.out.printf(
-                        "%-25s %-18s %-20s %-20s%n",
-                        "Tenant",
-                        "Kategori",
-                        "Mulai",
-                        "Selesai"
-                );
+        System.out.println("\n[2] ALOKASI JADWAL STAND - BACKTRACKING");
+        printAssignments(backtrackResult);
 
-                System.out.println(
-                        "--------------------------------------------------------------------------------"
-                );
+        System.out.println("\n--- RINGKASAN WAKTU EKSEKUSI ---");
+        System.out.printf("Greedy       : %d Tenant diterima (Waktu Eksekusi: %.4f ms)\n", greedyResult.size(), (timeGreedy / 1000000.0));
+        System.out.printf("Backtracking : %d Tenant diterima (Waktu Eksekusi: %.4f ms)\n", backtrackResult.size(), (timeBacktrack / 1000000.0));
+    }
 
-                boolean found = false;
+    private static void runExtremeCase() {
+        System.out.println("\n=== UJI KASUS EKSTREM (GREEDY TRAP) ===");
+        List<Tenant> extremeTenants = ExtremeData.getTenants();
+        
+        System.out.println("\n[Data Pendaftar Kasus Ekstrem]");
+        printTenantsAsTable(extremeTenants);
 
-                for (StandAssignment assignment : assignments) {
+        GreedyScheduler greedy = new GreedyScheduler(TOTAL_ZONES);
+        List<StandAssignment> greedyResult = greedy.schedule(extremeTenants);
 
-                if (assignment.getZoneNumber() == zone) {
+        BacktrackingScheduler backtrack = new BacktrackingScheduler(extremeTenants, TOTAL_ZONES);
+        List<StandAssignment> backtrackResult = backtrack.allocate();
 
-                        Tenant tenant =
-                                assignment.getTenant();
+        System.out.println("\n[Hasil Penjadwalan: GREEDY]");
+        printAssignments(greedyResult);
+        System.out.println(">> Total Diterima Greedy: " + greedyResult.size() + " Tenant");
 
-                        System.out.printf(
-                                "%-25s %-18s %-20s %-20s%n",
-                                tenant.getName(),
-                                tenant.getCategory(),
-                                TimeHelper.format(
-                                        tenant.getStartTime()
-                                ),
-                                TimeHelper.format(
-                                        tenant.getEndTime()
-                                )
-                        );
+        System.out.println("\n[Hasil Penjadwalan: BACKTRACKING]");
+        printAssignments(backtrackResult);
+        System.out.println(">> Total Diterima Backtracking: " + backtrackResult.size() + " Tenant");
+    }
 
-                        found = true;
-                }
-                }
-
-                if (!found) {
-
-                System.out.println(
-                        "(Kosong)"
-                );
-                }
+    // FUNGSI INI TETAP ADA: Menampilkan rincian stand khusus untuk menu 4 dan 5
+    private static void printAssignments(List<StandAssignment> assignments) {
+        if (assignments.isEmpty()) {
+            System.out.println("Tidak ada tenant yang berhasil dijadwalkan.");
+            return;
         }
+        for (int zone = 1; zone <= TOTAL_ZONES; zone++) {
+            System.out.println(">> STAND " + zone + " <<");
+            boolean found = false;
+            for (StandAssignment sa : assignments) {
+                if (sa.getZoneNumber() == zone) {
+                    Tenant t = sa.getTenant();
+                    System.out.println(" * " + t.getName() + " (" + t.getCategory() + ")");
+                    System.out.println("   " + formatTime(t.getStartTime()) + " s.d " + formatTime(t.getEndTime()));
+                    found = true;
+                }
+            }
+            if (!found) {
+                System.out.println("   (Kosong)");
+            }
+            System.out.println(); // Spasi antar stand
         }
-
-    private static void waitEnter(
-            Scanner scanner
-    ) {
-
-        System.out.print(
-                "\nTekan ENTER untuk kembali ke menu..."
-        );
-
-        scanner.nextLine();
-        scanner.nextLine();
     }
 }
