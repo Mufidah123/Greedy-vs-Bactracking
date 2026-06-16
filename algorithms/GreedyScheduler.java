@@ -8,7 +8,13 @@ import models.Tenant;
 
 public class GreedyScheduler {
 
-    private static final int TOTAL_ZONES = 4;
+    private final int totalZones;
+
+    public GreedyScheduler(
+            int totalZones
+    ) {
+        this.totalZones = totalZones;
+    }
 
     private final List<Tenant> rejectedTenants =
             new ArrayList<>();
@@ -40,7 +46,7 @@ public class GreedyScheduler {
             boolean assigned = false;
 
             for (int zone = 1;
-                 zone <= TOTAL_ZONES;
+                 zone <= totalZones;
                  zone++) {
 
                 if (isSafe(

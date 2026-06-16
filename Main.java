@@ -9,7 +9,7 @@ import utils.TimeHelper;
 
 public class Main {
 
-    private static final int TOTAL_ZONES = 5;
+    private static final int TOTAL_ZONES = 4;
 
     private static boolean greedyExecuted = false;
     private static boolean backtrackingExecuted = false;
@@ -132,7 +132,7 @@ public class Main {
         System.out.println("=================================================");
 
         GreedyScheduler greedy =
-                new GreedyScheduler();
+                new GreedyScheduler(TOTAL_ZONES);
 
         List<StandAssignment> result =
                 greedy.schedule(tenants);
